@@ -1,0 +1,6 @@
+{
+  "name": "Cisco Sales Pipeline Dashboard",
+  "description": "Salesforce-style pipeline dashboard for Cisco product managers and account managers.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
