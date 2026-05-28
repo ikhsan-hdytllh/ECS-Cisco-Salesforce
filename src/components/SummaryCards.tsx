@@ -1,3 +1,4 @@
+import React from 'react';
 import { Deal } from '../types';
 import { formatCurrency } from '../utils';
 import { Target, ListChecks, TrendingUp, Trophy } from 'lucide-react';

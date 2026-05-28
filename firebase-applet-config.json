@@ -3,6 +3,7 @@
   "appId": "1:149952268424:web:d1aed506f3731a8992f73d",
   "apiKey": "AIzaSyAIgURIP0eDvwRqkNLeoMH-6gGTnSZ0-1c",
   "authDomain": "cisco-ecs-salesforec.firebaseapp.com",
+  "firestoreDatabaseId": "ai-studio-b8b226b7-7252-47e1-85b3-203134685b93",
   "storageBucket": "cisco-ecs-salesforec.firebasestorage.app",
   "messagingSenderId": "149952268424",
   "measurementId": ""

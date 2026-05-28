@@ -1,0 +1,79 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // 1. Global Safety Net
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // Reusable, hardened helpers
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isValidId(id) {
+      return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    function incoming() {
+      return request.resource.data;
+    }
+
+    function existing() {
+      return resource.data;
+    }
+
+    // Validation Blueprint for User profiles
+    function isValidUser(data) {
+      return data.keys().hasAll(['uid', 'email'])
+        && data.uid is string && data.uid.size() <= 128
+        && data.email is string && data.email.size() <= 256
+        && (!('displayName' in data) || (data.displayName is string && data.displayName.size() <= 256))
+        && (!('mfaEnabled' in data) || data.mfaEnabled is bool)
+        && (!('mfaSecret' in data) || (data.mfaSecret is string && data.mfaSecret.size() <= 128))
+        && (!('createdAt' in data) || (data.createdAt is string && data.createdAt.size() <= 128));
+    }
+
+    // Validation Blueprint for Deal opportunities
+    function isValidDeal(data) {
+      return data.keys().hasAll(['id', 'Product', 'Enduser', 'Value_Net', 'Stage', 'ownerId'])
+        && data.id is string && data.id.size() <= 128
+        && data.Product is string && data.Product.size() <= 256
+        && data.Enduser is string && data.Enduser.size() <= 256
+        && (!('Partner' in data) || (data.Partner is string && data.Partner.size() <= 256))
+        && (!('AM_Cisco' in data) || (data.AM_Cisco is string && data.AM_Cisco.size() <= 256))
+        && (!('Pricelist' in data) || (data.Pricelist is int || data.Pricelist is float))
+        && (!('Disc' in data) || (data.Disc is int || data.Disc is float))
+        && (data.Value_Net is int || data.Value_Net is float)
+        && (!('Archi' in data) || (data.Archi is string && data.Archi.size() <= 128))
+        && (!('DID' in data) || (data.DID is string && data.DID.size() <= 128))
+        && (!('Estimate' in data) || (data.Estimate is string && data.Estimate.size() <= 128))
+        && (data.Stage is int || data.Stage is float)
+        && (!('Req_Masuk_Date' in data) || (data.Req_Masuk_Date is string && data.Req_Masuk_Date.size() <= 128))
+        && (!('Req_Masuk' in data) || (data.Req_Masuk is string && data.Req_Masuk.size() <= 128))
+        && (!('Estimate_Close_Date' in data) || (data.Estimate_Close_Date is string && data.Estimate_Close_Date.size() <= 128))
+        && (!('Estimate_Close' in data) || (data.Estimate_Close is string && data.Estimate_Close.size() <= 128))
+        && (!('Channel_ECS' in data) || (data.Channel_ECS is string && data.Channel_ECS.size() <= 256))
+        && (!('PIC_Presales' in data) || (data.PIC_Presales is string && data.PIC_Presales.size() <= 256))
+        && (!('Remarks' in data) || (data.Remarks is string && data.Remarks.size() <= 1000))
+        && data.ownerId is string && data.ownerId.size() <= 128
+        && (!('ownerEmail' in data) || (data.ownerEmail is string && data.ownerEmail.size() <= 256))
+        && (!('updatedAt' in data) || (data.updatedAt is string && data.updatedAt.size() <= 128));
+    }
+
+    // 2. Collection Rules
+    match /users/{userId} {
+      allow get: if isSignedIn() && request.auth.uid == userId;
+      allow create, update: if isSignedIn() && request.auth.uid == userId && isValidUser(incoming());
+      allow list, delete: if false; // Strict PII isolation
+    }
+
+    match /deals/{dealId} {
+      allow read: if isSignedIn();
+      allow create: if isSignedIn() && isValidId(dealId) && isValidDeal(incoming()) && incoming().ownerId == request.auth.uid;
+      allow update: if isSignedIn() && isValidId(dealId) && isValidDeal(incoming()) && existing().ownerId == request.auth.uid && incoming().ownerId == existing().ownerId;
+      allow delete: if isSignedIn() && isValidId(dealId) && existing().ownerId == request.auth.uid;
+    }
+  }
+}

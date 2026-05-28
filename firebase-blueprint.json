@@ -1,0 +1,142 @@
+{
+  "entities": {
+    "User": {
+      "title": "User",
+      "description": "User profile with local multi-factor authentication preferences",
+      "type": "object",
+      "properties": {
+        "uid": {
+          "type": "string",
+          "description": "Unique user credentials identifier"
+        },
+        "email": {
+          "type": "string",
+          "description": "Primary communication email address"
+        },
+        "displayName": {
+          "type": "string",
+          "description": "Human-friendly descriptor"
+        },
+        "mfaEnabled": {
+          "type": "boolean",
+          "description": "Status indicator for multi-factor authentication"
+        },
+        "mfaSecret": {
+          "type": "string",
+          "description": "Shared secure seed for generating authenticator codes"
+        },
+        "createdAt": {
+          "type": "string",
+          "description": "Creation timestamp"
+        }
+      },
+      "required": ["uid", "email"]
+    },
+    "Deal": {
+      "title": "Deal",
+      "description": "A single sales opportunity pipeline item",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier of the deal"
+        },
+        "Product": {
+          "type": "string",
+          "description": "BDM/Product Specialist name in charge"
+        },
+        "Enduser": {
+          "type": "string",
+          "description": "End-user company name"
+        },
+        "Partner": {
+          "type": "string",
+          "description": "Partner reseller partner name"
+        },
+        "AM_Cisco": {
+          "type": "string",
+          "description": "Cisco Account Manager name"
+        },
+        "Pricelist": {
+          "type": "number",
+          "description": "Total list price before discount"
+        },
+        "Disc": {
+          "type": "number",
+          "description": "Discount rate percentage"
+        },
+        "Value_Net": {
+          "type": "number",
+          "description": "Net deal value in USD"
+        },
+        "Archi": {
+          "type": "string",
+          "description": "Cisco architecture classification"
+        },
+        "DID": {
+          "type": "string",
+          "description": "Cisco Deal ID reference"
+        },
+        "Estimate": {
+          "type": "string",
+          "description": "Cisco Estimate Number"
+        },
+        "Stage": {
+          "type": "number",
+          "description": "Closing alignment stage percentage"
+        },
+        "Req_Masuk_Date": {
+          "type": "string",
+          "description": "Request entry date calendar value"
+        },
+        "Req_Masuk": {
+          "type": "string",
+          "description": "Request entry fiscal quarter equivalent"
+        },
+        "Estimate_Close_Date": {
+          "type": "string",
+          "description": "Estimated target closure date"
+        },
+        "Estimate_Close": {
+          "type": "string",
+          "description": "Estimated closure fiscal quarter equivalent"
+        },
+        "Channel_ECS": {
+          "type": "string",
+          "description": "Enterprise commercial distributor partner channel"
+        },
+        "PIC_Presales": {
+          "type": "string",
+          "description": "Presales engineer supervisor"
+        },
+        "Remarks": {
+          "type": "string",
+          "description": "Timeline status remarks"
+        },
+        "ownerId": {
+          "type": "string",
+          "description": "Reference to creator's UID"
+        },
+        "ownerEmail": {
+          "type": "string",
+          "description": "Reference to creator's email address"
+        },
+        "updatedAt": {
+          "type": "string",
+          "description": "Last operation timestamp"
+        }
+      },
+      "required": ["id", "Product", "Enduser", "Value_Net", "Stage", "ownerId"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": "User",
+      "description": "Registered pipeline members"
+    },
+    "/deals/{dealId}": {
+      "schema": "Deal",
+      "description": "ECS collaborative pipeline deals"
+    }
+  }
+}

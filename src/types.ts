@@ -18,6 +18,9 @@ export interface Deal {
   Channel_ECS: string; // nama channel ECS yang terlibat
   PIC_Presales: string; // nama presales engineer
   Remarks: string; // catatan tambahan
+  ownerId?: string; // UID milik pembuat deal
+  ownerEmail?: string; // Email milik pembuat deal
+  updatedAt?: string; // Tanggal update terakhir
 }
 
 export const stageColors: Record<number, string> = {
